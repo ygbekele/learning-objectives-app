@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Flashcard Slides</title>
+  <style>
+    body {
+      font-family: 'Aptos', sans-serif;
+      background: #f4f4f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 40px;
+      margin: 0;
+    }
+    #card {
+      width: 900px;
+      max-width: 90vw;
+      padding: 40px 50px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      max-height: 68vh;
+      overflow: hidden;
+    }
+    h1 {
+      font-family: 'Sitka Heading', serif;
+      font-size: 24pt;
+      text-align: center;
+      margin: 0;
+    }
+    .header {
+      font-weight: bold;
+      font-size: 14pt;
+      margin: 20px 0 10px 0;
+    }
+    ul {
+      list-style-type: none;
+      padding-left: 24px;
+      margin: 0 0 40px 0;
+    }
+    li {
+      font-size: 14pt;
+      margin-bottom: 8px;
+      text-align: justify;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+    #controls {
+      margin-top: 20px;
+    }
+    button {
+      background: #4a90e2;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 24px;
+      font-size: 14pt;
+      cursor: pointer;
+      margin: 0 12px;
+    }
+    button:disabled {
+      background: #999;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+
+<div id="card"></div>
+
+<div id="controls">
+  <button id="prev">Prev</button>
+  <button id="next">Next</button>
+</div>
+
+<script>
+const slides = [
+  // 🔁 This array will be dynamically filled by the LLM
+];
+
+let idx = 0;
+const card = document.getElementById('card');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+
+function setFont(pt) {
+  card.style.fontSize = pt + 'pt';
+  card.querySelectorAll('.header').forEach(h => h.style.fontSize = pt + 'pt');
+  card.querySelectorAll('li').forEach(li => li.style.fontSize = pt + 'pt');
+  const h1 = card.querySelector('h1');
+  if (h1) h1.style.fontSize = (pt + 10) + 'pt';
+}
+
+function render(i) {
+  const s = slides[i];
+  let html = `<h1>${s.title}</h1>`;
+  s.sections.forEach(sec => {
+    const bullets = sec.bullets.map(b => `<li>${b}</li>`).join('');
+    html += `<div class="header">${sec.header}</div><ul>${bullets}</ul>`;
+  });
+  card.innerHTML = html;
+
+  let size = 14;
+  setFont(size);
+  const min = 9;
+  while (card.scrollHeight > card.clientHeight && size > min) {
+    size -= 0.5;
+    setFont(size);
+  }
+
+  prev.disabled = (i === 0);
+  next.disabled = (i === slides.length - 1);
+}
+
+prev.onclick = () => { if (idx > 0) { idx--; render(idx); } };
+next.onclick = () => { if (idx < slides.length - 1) { idx++; render(idx); } };
+
+render(0);
+</script>
+
+</body>
+</html>
