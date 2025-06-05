@@ -76,8 +76,18 @@
 
 <script>
 const slides = [
-  // 🔁 This array will be dynamically filled by the LLM
-];
+  // 👇 THIS is the part the LLM will replace
+    const slides = [
+      {
+        "title": "PLACEHOLDER TITLE",
+        "sections": [
+          {
+            "header": "📌 Sample Header",
+            "bullets": ["• This is a placeholder slide bullet."]
+          }
+        ]
+      }
+    ];
 
 let idx = 0;
 const card = document.getElementById('card');
